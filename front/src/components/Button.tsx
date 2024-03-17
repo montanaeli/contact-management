@@ -5,7 +5,7 @@ type Props = {
 
 const Button = ({ text, onChange }: Props) => {
     return (
-        <button type="button" className="w-2/4 font-light text-white bg-purple-400 py-3 px-20 rounded-full mt-6 flex items-center justify-center" onChange={onChange}>
+        <button type="button" className="font-light text-white bg-purple-400 py-3 px-10 rounded-full mt-6 flex items-center justify-center" onChange={onChange}>
             {text}
         </button>
     );
