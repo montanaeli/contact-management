@@ -19,6 +19,8 @@ const Home = () => {
     },
   ])
 
+  // TODO: Redirect to login if user not logged or session expired
+
   return (
     <div className="max-w-4xl mx-auto px-4 w-full flex flex-col gap-4 mt-40 flex justify-items-center">
       <h1 className={`${inter.className} font-bold text-3xl py-4`}>Contacts</h1>
@@ -39,7 +41,7 @@ const Home = () => {
             </label>
             <Button
               text="Add new contacts"
-              onChange={() => console.log('clicked')}
+              onClick={() => console.log('clicked')}
             />
           </div>
         </>

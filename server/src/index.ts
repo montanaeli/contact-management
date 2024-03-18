@@ -7,6 +7,11 @@ import jwt from 'jsonwebtoken';
 dotenv.config();
 
 const app = express();
+
+// TODO: Enable cors for a production route https://expressjs.com/en/resources/middleware/cors.html 
+var cors = require('cors')
+app.use(cors())
+
 const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
@@ -30,6 +35,7 @@ let contacts = [
 const secretKey = 'confidential_key';
 var userId = "";
 
+// TODO: Import middleware from another component
 const verifyToken = (req: Request, res: Response, next: any) => {
   const token = req.headers.authorization;
   if (!token) {

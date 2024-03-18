@@ -19,7 +19,7 @@ const ContactData = ({ readOnly, mode }: Props) => {
   return (
     <>
       <div className="h-32 m-8 p-2 flex rounded-lg bg-gray-100 justify-end items-end">
-        <Button text="EDIT" onChange={() => console.log('clicked')} />
+        <Button text="EDIT" onClick={() => console.log('clicked')} />
       </div>
       <div className="relative">
         <div className="flex flex-col justify-center items-center gap-2 absolute left-0 right-0 -top-20">
