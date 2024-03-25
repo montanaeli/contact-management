@@ -4,6 +4,11 @@ import { v4 as uuidv4 } from "uuid";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
+declare namespace Express {
+  export interface Request {
+     userId?: string
+  }
+}
 dotenv.config();
 
 const app = express();
@@ -19,14 +24,21 @@ app.use(bodyParser.json());
 let contacts = [
   {
     id: uuidv4(),
-    name: "Contact 1",
+    name: "Contact1",
     address: "Address 1",
     email: "contact1@example.com",
     phone: "123456789",
   },
   {
     id: uuidv4(),
-    name: "Contact 2",
+    name: "Contact1",
+    address: "Address 3",
+    email: "contact13@example.com",
+    phone: "123456789",
+  },
+  {
+    id: uuidv4(),
+    name: "Contact2",
     address: "Address 2",
     email: "contact2@example.com",
     phone: "123456789",
@@ -66,7 +78,6 @@ let users = [
 ];
 
 const secretKey = "confidential_key";
-var userId = "";
 
 // TODO: Import middleware from another component
 const verifyToken = (req: Request, res: Response, next: any) => {
@@ -79,7 +90,7 @@ const verifyToken = (req: Request, res: Response, next: any) => {
     if (err) {
       return res.status(401).json({ message: "Failed to authenticate token" });
     }
-    userId = decoded.userId;
+    req.currentUser = decoded.userId;
     next();
   });
 };
@@ -99,18 +110,28 @@ app.post("/login", (req: Request, res: Response) => {
   }
 });
 
-app.get("/user", verifyToken, (req: Request, res: Response) => {
-  const user = users.find((u) => u.id === userId);
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+app.get("/contact/:id", verifyToken, (req: Request, res: Response) => {
+  const user = users.find((u) => u.id === req.currentUser);
+  if (Object.keys(req.query).length === 0) {
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({ message: "Your user data", user });
+  } else {
+    const id = req.params.id;
+    const contact = user?.contacts.find((c) => c.id === id);
+    if (!contact) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    return res.status(200).json(contact);
   }
-  return res.status(200).json({ message: "Your user data", user });
 });
 
-app.put("/user", verifyToken, (req: Request, res: Response) => {
+app.put("/contact", verifyToken, (req: Request, res: Response) => {
   const {name, title, profilePicture, addressList, phone, email} = req.body;
 
-  const user = users.find((u) => u.id === userId);
+  const user = users.find((u) => u.id === req.currentUser);
   if (!user) {
     return res.status(404).json({ message: "User not found"})
   }
@@ -125,15 +146,28 @@ app.put("/user", verifyToken, (req: Request, res: Response) => {
 });
 
 app.get("/contacts", verifyToken, (req: Request, res: Response) => {
-  const user = users.find((u) => u.id === userId);
-  const userContacts = user?.contacts;
-  if (userContacts === undefined || !userContacts.length) {
-    return res.status(401).json({ message: "No user contacts" });
+  const name = req.query.search?.toString()
+
+  const user = users.find((u) => u.id === req.currentUser);
+  if (Object.keys(req.query).length === 0) {
+    const userContacts = user?.contacts;
+    if (userContacts === undefined || !userContacts.length) {
+      return res.status(401).json({ message: "No user contacts" });
+    }
+    return res.status(200).json(userContacts);
+  } else {
+      const userContacts = user?.contacts.filter((contact) => 
+        contact.name.toLowerCase().includes(name!.toLowerCase())
+      );
+      if (!userContacts) {
+        return res.status(404).json({ message: "Contact not found" });
+      }
+    
+      return res.status(200).json(userContacts);
   }
-  return res.status(200).json(userContacts);
 });
 
-app.post("/contacts", verifyToken, (req: Request, res: Response) => {
+app.post("/contact", verifyToken, (req: Request, res: Response) => {
   const { name, address, email, phone } = req.body;
   if (!name || !address || !email || !phone) {
     return res
@@ -144,7 +178,6 @@ app.post("/contacts", verifyToken, (req: Request, res: Response) => {
   }
   const newContact = {
     id: uuidv4(),
-    userId,
     name,
     address,
     email,
@@ -154,58 +187,6 @@ app.post("/contacts", verifyToken, (req: Request, res: Response) => {
   return res
     .status(201)
     .json({ message: "Contact created", contact: newContact });
-});
-
-app.get("/contacts/contact", verifyToken, (req: Request, res: Response) => {
-  let contactName: string = req.query.contactName as string;
-  if (!contactName) {
-    return res.status(400).json({ message: "Missing contactName parameter" });
-  }
-
-  const user = users.find((u) => u.id === userId);
-  if (!user) {
-    return res.status(500).json({ message: "User not found" });
-  }
-
-  const userContacts = user.contacts;
-  if (!Array.isArray(userContacts)) {
-    return res.status(500).json({ message: "User contacts not found" });
-  }
-
-  const filteredContacts = userContacts.filter((contact) =>
-    contact.name.toLowerCase().includes(contactName.toLowerCase())
-  );
-
-  if (filteredContacts.length === 0) {
-    return res.status(404).json({ message: "No contacts found" });
-  }
-
-  return res.status(200).json(filteredContacts);
-});
-
-app.post("/contacts/", verifyToken, (req: Request, res: Response) => {
-  const contactId = uuidv4();
-  const { name, address, email, phone } = req.body;
-
-  if (!name || !address || !email || !phone) {
-    return res
-      .status(400)
-      .json({
-        message: "Missing required fields: name, address, email and phone",
-      });
-  }
-
-  const createContact = {
-    id: contactId,
-    name,
-    address,
-    email,
-    phone,
-  };
-
-  return res
-    .status(200)
-    .json({ message: "Contact modified successfully", contact: createContact });
 });
 
 app.listen(port, () => {
