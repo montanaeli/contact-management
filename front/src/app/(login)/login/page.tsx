@@ -3,8 +3,10 @@
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import { Inter } from "next/font/google";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from 'react-redux';
+import { setToken } from '../../../lib/reducers/authSlice';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,6 +14,8 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     try {
@@ -26,7 +30,7 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // TODO: Use token as state session, Redux
+        dispatch(setToken(data.token));
         router.push("/");
       } else {
         console.error("Login failed");

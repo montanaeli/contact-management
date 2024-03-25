@@ -1,8 +1,11 @@
+"use client";
+
 import { configureStore } from '@reduxjs/toolkit'
+import authReducer from '@/lib/reducers/authSlice'
 
 export const makeStore = () => {
   return configureStore({
-    reducer: {},
+    reducer: {authReducer},
   })
 }
 
