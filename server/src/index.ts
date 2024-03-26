@@ -4,13 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
-declare namespace Express {
-  export interface Request {
-     userId?: string
-  }
-}
 dotenv.config();
-
 const app = express();
 
 // TODO: Enable cors for a production route https://expressjs.com/en/resources/middleware/cors.html
@@ -23,21 +17,22 @@ app.use(bodyParser.json());
 
 let contacts = [
   {
-    id: uuidv4(),
+    // id: uuidv4(),
+    id: "c1",
     name: "Contact1",
     address: "Address 1",
     email: "contact1@example.com",
     phone: "123456789",
   },
   {
-    id: uuidv4(),
+    id: "c2",
     name: "Contact1",
     address: "Address 3",
     email: "contact13@example.com",
     phone: "123456789",
   },
   {
-    id: uuidv4(),
+    id: "c3",
     name: "Contact2",
     address: "Address 2",
     email: "contact2@example.com",
@@ -46,7 +41,7 @@ let contacts = [
 ];
 let users = [
   {
-    id: uuidv4(),
+    id: "1",
     username: "user1",
     password: "password1",
     contacts: contacts,
@@ -61,7 +56,7 @@ let users = [
     email: "ryan@rowandtable.com",
   },
   {
-    id: uuidv4(),
+    id: "2",
     username: "user2",
     password: "password2",
     contacts: contacts,
@@ -81,10 +76,12 @@ const secretKey = "confidential_key";
 
 // TODO: Import middleware from another component
 const verifyToken = (req: Request, res: Response, next: any) => {
-  const token = req.headers.authorization;
-  if (!token) {
+  const authToken = req.headers.authorization;
+  if (!authToken) {
     return res.status(401).json({ message: "Missing token" });
   }
+
+  const token = authToken.toString().replace('Bearer ','')
 
   jwt.verify(token, secretKey, (err: any, decoded: any) => {
     if (err) {
@@ -102,8 +99,9 @@ app.post("/login", (req: Request, res: Response) => {
   );
   if (user) {
     const token = jwt.sign({ userId: user.id }, "confidential_key", {
-      expiresIn: "1h",
+      expiresIn: "3h",
     });
+    console.log("id user login ", user.id)
     res.status(200).json({ message: "Login successful", token });
   } else {
     res.status(401).json({ message: "Invalid username or password" });
@@ -112,13 +110,14 @@ app.post("/login", (req: Request, res: Response) => {
 
 app.get("/contact/:id", verifyToken, (req: Request, res: Response) => {
   const user = users.find((u) => u.id === req.currentUser);
-  if (Object.keys(req.query).length === 0) {
+  const id = req.params.id;
+
+  if (!id) {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    return res.status(200).json({ message: "Your user data", user });
   } else {
-    const id = req.params.id;
+    
     const contact = user?.contacts.find((c) => c.id === id);
     if (!contact) {
       return res.status(404).json({ message: "Contact not found" });
@@ -149,6 +148,7 @@ app.get("/contacts", verifyToken, (req: Request, res: Response) => {
   const name = req.query.search?.toString()
 
   const user = users.find((u) => u.id === req.currentUser);
+
   if (Object.keys(req.query).length === 0) {
     const userContacts = user?.contacts;
     if (userContacts === undefined || !userContacts.length) {

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from 'react-redux';
 import { setToken } from '../../../lib/reducers/authSlice';
+import axios from '@/lib/axiosInstance';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,19 +20,14 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      // TODO: use axios
-      const response = await fetch("http://localhost:3001/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        dispatch(setToken(data.token));
-        router.push("/");
+      const response = await axios.post("/login", { username: username, password: password})
+
+      if (response) {
+        const data = response.data;
+        // dispatch(setToken(data.token));
+        localStorage.setItem('authToken', data.token)
+        router.push("/contact");
       } else {
         console.error("Login failed");
       }
