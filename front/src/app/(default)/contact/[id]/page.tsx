@@ -3,7 +3,7 @@
 import ContactData from "@/components/ContactData";
 import { useRouter } from "next/navigation";
 import axios from "@/lib/axiosInstance";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { headers } from "next/headers";
 
 const Contact = ({ params }: { params: { id: string } }) => {
@@ -14,7 +14,7 @@ const Contact = ({ params }: { params: { id: string } }) => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
 
-  const getUserData = async () => {
+  const getUserData = useCallback(async () => {
     if (params.id) {
       try {
         const response = await axios.get(`/contact/${params.id}`);
@@ -28,7 +28,7 @@ const Contact = ({ params }: { params: { id: string } }) => {
         console.error("Error fetching user data:", error);
       }
     }
-  };
+  }, []);
 
   useEffect(() => {
     getUserData();
@@ -39,7 +39,7 @@ const Contact = ({ params }: { params: { id: string } }) => {
     <>
       <ContactData
         readOnly={true}
-        mode="view"
+        mode="update"
         name={name}
         title={title}
         profilePicture={profilePicture}
