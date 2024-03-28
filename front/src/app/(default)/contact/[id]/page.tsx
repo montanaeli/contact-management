@@ -46,6 +46,7 @@ const Contact = ({ params }: { params: { id: string } }) => {
         address={address}
         phone={phone}
         email={email}
+        contactId={params.id}
       ></ContactData>
     </>
   );

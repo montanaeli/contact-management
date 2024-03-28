@@ -101,7 +101,6 @@ app.post("/login", (req: Request, res: Response) => {
     const token = jwt.sign({ userId: user.id }, "confidential_key", {
       expiresIn: "3h",
     });
-    console.log("id user login ", user.id)
     res.status(200).json({ message: "Login successful", token });
   } else {
     res.status(401).json({ message: "Invalid username or password" });

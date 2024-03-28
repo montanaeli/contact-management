@@ -2,7 +2,8 @@ import Image from "next/image";
 import Button from "@/components/Button";
 import Input from "./Input";
 import { useState } from "react";
-import Select from 'react-select'
+import Select from "react-select";
+import Link from "next/link";
 
 type Props = {
   readOnly: boolean;
@@ -13,6 +14,7 @@ type Props = {
   address?: string[];
   phone?: string;
   email?: string;
+  contactId: string;
 };
 
 const ContactData = ({
@@ -24,6 +26,7 @@ const ContactData = ({
   address,
   phone,
   email,
+  contactId,
 }: Props) => {
   const [userName, setUserName] = useState("");
   const [userTitle, setUserTitle] = useState("");
@@ -38,17 +41,20 @@ const ContactData = ({
         {mode === "view" ? (
           <></>
         ) : (
-          <Button text="EDIT" onClick={() => console.log("clicked")} />
+          <Link href={`/contact/${contactId}/edit`}>
+            <Button text="EDIT" />
+          </Link>
         )}
       </div>
       <div className="relative">
-        <div className="flex flex-col justify-center items-center gap-2 absolute left-0 right-0 -top-20">
-          <Image
+      <Image
+      className="absolute bottom-full left-1/2 -translate-x-[50%]"
             src="/assets/profile-picture.svg"
             alt="profile-picture"
             width={150}
             height={150}
           />
+        <div className="flex flex-col justify-center items-center gap-2 margin-top: 80px">
           <label className="font-bold text-lg mt-3">{name}</label>
           <label className="font-extralight text-sm">{title}</label>
           {readOnly ? (
@@ -94,7 +100,7 @@ const ContactData = ({
                 />
               </div>
               <div className="flex flex-col w-1/2 gap-2 md:w-1/2">
-                <Select options={userAddress}/>
+                <Select options={userAddress} />
                 <Input
                   title="Phone"
                   placeholder=""

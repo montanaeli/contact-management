@@ -1,6 +1,6 @@
 type Props = {
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 const Button = ({ text, onClick }: Props) => {
