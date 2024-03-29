@@ -18,25 +18,43 @@ app.use(bodyParser.json());
 let contacts = [
   {
     // id: uuidv4(),
-    id: "c1",
-    name: "Contact1",
-    address: "Address 1",
-    email: "contact1@example.com",
-    phone: "123456789",
-  },
-  {
-    id: "c2",
-    name: "Contact1",
-    address: "Address 3",
-    email: "contact13@example.com",
-    phone: "123456789",
-  },
-  {
     id: "c3",
-    name: "Contact2",
-    address: "Address 2",
-    email: "contact2@example.com",
-    phone: "123456789",
+    name: "Norma Wilson",
+    title: "Accounter",
+    profilePicture: "",
+    addressList: [
+      { address: "717 S  34th St Mattoon, IL 61938" },
+      { address: "718 S  34th St Mattoon, IL 61938" },
+      { address: "718 S  34th St Mattoon, IL 61938" },
+    ],
+    phone: "(217) 499-0822",
+    email: "norma@rowandtable.com",
+  },
+  {
+    // id: uuidv4(),
+    id: "c4",
+    name: "Ted Steward",
+    title: "Teacher",
+    profilePicture: "",
+    addressList: [
+      { address: "717 S  34th St Mattoon, IL 61938" },
+    ],
+    phone: "(217) 499-0822",
+    email: "ted@rowandtable.com",
+  },
+  {
+    // id: uuidv4(),
+    id: "c5",
+    name: "Wade Mccoy",
+    title: "Product Manager",
+    profilePicture: "",
+    addressList: [
+      { address: "717 S  34th St Mattoon, IL 61938" },
+      { address: "718 S  34th St Mattoon, IL 61938" },
+      { address: "718 S  34th St Mattoon, IL 61938" },
+    ],
+    phone: "(217) 499-0822",
+    email: "wade@rowandtable.com",
   },
 ];
 let users = [
@@ -96,7 +114,8 @@ app.get("/me", verifyToken, (req: Request, res: Response) => {
   const actualUser = users.find(u => u.id === req.currentUser)
   res.status(200).json({
     id: actualUser?.id,
-    name: actualUser?.name
+    name: actualUser?.name,
+    contacts: actualUser?.contacts
   })
 });
 
@@ -175,8 +194,8 @@ app.get("/contacts", verifyToken, (req: Request, res: Response) => {
 });
 
 app.post("/contact", verifyToken, (req: Request, res: Response) => {
-  const { name, address, email, phone } = req.body;
-  if (!name || !address || !email || !phone) {
+  const { name, title, profilePicture, addressList, phone, email } = req.body;
+  if (!name || !title || !profilePicture || !addressList || !email || !phone) {
     return res
       .status(400)
       .json({
@@ -186,9 +205,11 @@ app.post("/contact", verifyToken, (req: Request, res: Response) => {
   const newContact = {
     id: uuidv4(),
     name,
-    address,
-    email,
+    title,
+    profilePicture,
+    addressList,
     phone,
+    email,
   };
   contacts.push(newContact);
   return res

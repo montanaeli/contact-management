@@ -1,8 +1,3 @@
-import { Inter } from "next/font/google";
-import { useState } from "react";
-
-const inter = Inter({ subsets: ["latin"] });
-
 type Props = {
     title: string
     placeholder: string
@@ -14,7 +9,7 @@ type Props = {
 const Input = ({ title, placeholder, value, type, onChange }: Props) => {
     return (
         <div className="w-full">
-            <label className={`${inter.className}`}>
+            <label>
                 {title}
             </label>
             <input

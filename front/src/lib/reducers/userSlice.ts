@@ -1,29 +1,55 @@
 "use client";
 
+import Contact from '@/app/(default)/contact/[id]/page';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface userState {
-  name: string;
-  contacts: string[] | null;
+interface Contact {
+  id: string,
+  name: string,
+  title: string,
+  profilePicture: string,
+  addressList: string[],
+  phone: string,
+  email: string
 }
 
-const initialState: userState = {
+interface UserState {
+  name: string;
+  contacts: Contact[];
+  contactById: Contact;
+}
+
+const initialState: UserState = {
   name: "",
-  contacts: null
+  contacts: [],
+  contactById: {id: "", name: "", title: "", profilePicture: "", addressList: [], phone: "", email: ""}
 };
 
 const userSlice = createSlice({
   name: 'userInfo',
   initialState,
   reducers: {
-    loggedUser(state, action: PayloadAction<string>) {
-      state.name = action.payload;
+    loggedUser(state, action: PayloadAction<{name: string; contacts: Contact[]}>) {
+      state.name = action.payload.name;
+      state.contacts = action.payload.contacts;
     },
-    setUserContacts(state, action: PayloadAction<string[]>) {
-      state.contacts = action.payload;
-    }
+    addContact(state, action: PayloadAction<Contact>) {
+      state.contacts.push(action.payload);
+    },
+    getContactById(state, action: PayloadAction<string>) {
+      const contactId = action.payload;
+      console.log("user slice id", contactId)
+      const contact = state.contacts.find(contact => contact.id === contactId);
+      console.log("user slice", contact)
+
+      if (contact) {
+        state.contactById = contact;
+      } else {
+        state.contacts = [];
+      }
+    },
   },
 });
 
-export const { loggedUser, setUserContacts } = userSlice.actions;
+export const { loggedUser, addContact, getContactById } = userSlice.actions;
 export default userSlice.reducer;

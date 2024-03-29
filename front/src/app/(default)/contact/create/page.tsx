@@ -4,10 +4,10 @@ import Image from 'next/image'
 import Button from '@/components/Button'
 import ContactData from '@/components/ContactData'
 
-const Create = () => {
+const Create = ({ params }: { params: { id: string } }) => {
   return (
     <>
-      <ContactData readOnly={false} mode='create'></ContactData>
+      <ContactData readOnly={false} mode='create' contactId={params.id}></ContactData>
     </>
   )
 }

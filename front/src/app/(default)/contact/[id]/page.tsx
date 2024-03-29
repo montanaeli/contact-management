@@ -1,10 +1,8 @@
 "use client";
 
 import ContactData from "@/components/ContactData";
-import { useRouter } from "next/navigation";
 import axios from "@/lib/axiosInstance";
 import { useCallback, useEffect, useState } from "react";
-import { headers } from "next/headers";
 
 const Contact = ({ params }: { params: { id: string } }) => {
   const [name, setName] = useState("");

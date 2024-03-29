@@ -6,8 +6,6 @@ import ContactPreview from "@/components/ContactPreview";
 import { Inter } from "next/font/google";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { RootState } from "@/lib/store";
-import { useSelector } from "react-redux";
 import axios from "@/lib/axiosInstance";
 
 const inter = Inter({ subsets: ["latin"] });

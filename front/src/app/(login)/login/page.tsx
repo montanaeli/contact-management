@@ -5,10 +5,7 @@ import Button from "@/components/Button";
 import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from 'react-redux';
-import { setToken } from '../../../lib/reducers/authSlice';
 import axios from '@/lib/axiosInstance';
-import { loggedUser } from "@/lib/reducers/userSlice";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,8 +13,6 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-
-  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     try {

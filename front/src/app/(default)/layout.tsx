@@ -1,5 +1,8 @@
 import SimpleButton from "@/components/SimpleButton";
 import UserLoaded from "@/components/UserLoaded";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -12,7 +15,7 @@ export default function RootLayout({
           <SimpleButton text="Back" type={"back"} />
           <UserLoaded/>
       </div>
-      <div>{children}</div>
+      <div className={`${inter.className}`} >{children}</div>
     </div>
   );
 }

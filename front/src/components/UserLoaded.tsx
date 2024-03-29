@@ -24,7 +24,7 @@ const UserLoaded = () => {
                     'Authorization' : `Bearer ${token}`
                 }
             })
-            dispatch(loggedUser(response.data.name))
+            dispatch(loggedUser({ name: response.data.name, contacts: response.data.contacts }));
         }
         process()
     }, [])

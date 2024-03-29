@@ -4,6 +4,15 @@ import Input from "./Input";
 import { useState } from "react";
 import Select from "react-select";
 import Link from "next/link";
+import axios from "@/lib/axiosInstance";
+
+type SubmitData = {
+  name?: string;
+  title?: string;
+  address?: string[];
+  phone?: string;
+  email?: string;
+}
 
 type Props = {
   readOnly: boolean;
@@ -15,6 +24,7 @@ type Props = {
   phone?: string;
   email?: string;
   contactId: string;
+  onSubmit?: (data: SubmitData) => void
 };
 
 const ContactData = ({
@@ -27,13 +37,27 @@ const ContactData = ({
   phone,
   email,
   contactId,
+  onSubmit
 }: Props) => {
-  const [userName, setUserName] = useState("");
-  const [userTitle, setUserTitle] = useState("");
-  const [userProfilePicture, setUserProfilePicture] = useState("");
-  const [userAddress, setUserAddress] = useState<string[]>([]);
-  const [userPhone, setUserPhone] = useState("");
-  const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState(name);
+  const [userTitle, setUserTitle] = useState(title);
+  const [userProfilePicture, setUserProfilePicture] = useState(profilePicture);
+  const [userAddress, setUserAddress] = useState(address);
+  const [userPhone, setUserPhone] = useState(phone);
+  const [userEmail, setUserEmail] = useState(email);
+
+  const handleSaveChanges = () => {
+    const updateUser = {
+      name: userName,
+      title: userTitle,
+      address: userAddress,
+      phone: userPhone,
+      email: userEmail
+    }
+    if(onSubmit){
+      onSubmit(updateUser)
+    }
+  }
 
   return (
     <>
@@ -79,43 +103,45 @@ const ContactData = ({
               <div className="flex flex-col w-1/2 gap-2">
                 <Input
                   title="Name"
-                  placeholder=""
-                  value={userName}
+                  placeholder="Name"
+                  value={name || ""}
                   type="text"
                   onChange={(e) => setUserName(e.target.value)}
                 />
                 <Input
                   title="Title"
-                  placeholder=""
-                  value={userTitle}
+                  placeholder="Title"
+                  value={title || ""}
                   type="text"
                   onChange={(e) => setUserTitle(e.target.value)}
                 />
                 <Input
                   title="Profile Picture"
-                  placeholder=""
-                  value={userProfilePicture}
+                  placeholder="Profile Picture"
+                  value={profilePicture || ""}
                   type="text"
                   onChange={(e) => setUserProfilePicture(e.target.value)}
                 />
               </div>
               <div className="flex flex-col w-1/2 gap-2 md:w-1/2">
-                <Select options={userAddress} />
+                <label>Addresses</label>
+                <Select options={address || []} />
                 <Input
                   title="Phone"
-                  placeholder=""
-                  value={userPhone}
+                  placeholder="Phone"
+                  value={phone || ""}
                   type="text"
                   onChange={(e) => setUserPhone(e.target.value)}
                 />
                 <Input
                   title="Email"
-                  placeholder=""
-                  value={userEmail}
+                  placeholder="Email"
+                  value={email || ""}
                   type="text"
                   onChange={(e) => setUserEmail(e.target.value)}
                 />
               </div>
+              <Button text="Save Changes" onClick={handleSaveChanges} />
             </div>
           )}
         </div>
@@ -125,3 +151,7 @@ const ContactData = ({
 };
 
 export default ContactData;
+function uuidv4() {
+  throw new Error("Function not implemented.");
+}
+
