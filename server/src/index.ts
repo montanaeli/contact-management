@@ -143,7 +143,6 @@ app.get("/contact/:id", verifyToken, (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
   } else {
-    
     const contact = user?.contacts.find((c) => c.id === id);
     if (!contact) {
       return res.status(404).json({ message: "Contact not found" });
@@ -153,21 +152,27 @@ app.get("/contact/:id", verifyToken, (req: Request, res: Response) => {
   }
 });
 
-app.put("/contact", verifyToken, (req: Request, res: Response) => {
+app.put("/contact/:id", verifyToken, (req: Request, res: Response) => {
   const {name, title, profilePicture, addressList, phone, email} = req.body;
+  const id = req.params.id;
 
   const user = users.find((u) => u.id === req.currentUser);
   if (!user) {
     return res.status(404).json({ message: "User not found"})
+  } else {
+    const contact = user?.contacts.find((c) => c.id === id);
+    if (!contact) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+    contact.name = name;
+    contact.title = title;
+    contact.profilePicture = profilePicture;
+    contact.addressList = addressList;
+    contact.phone = phone;
+    contact.email = email;
+  
+    return res.status(200).json({ message: 'User updated successfully', contact });
   }
-  user.name = name;
-  user.title = title;
-  user.profilePicture = profilePicture;
-  user.addressList = addressList;
-  user.phone = phone;
-  user.email = email;
-
-  return res.status(200).json({ message: 'User updated successfully', user: users });
 });
 
 app.get("/contacts", verifyToken, (req: Request, res: Response) => {

@@ -37,7 +37,7 @@ const Contact = ({ params }: { params: { id: string } }) => {
     <>
       <ContactData
         readOnly={true}
-        mode="update"
+        mode="view"
         name={name}
         title={title}
         profilePicture={profilePicture}

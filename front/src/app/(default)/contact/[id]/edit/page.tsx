@@ -32,8 +32,8 @@ const Contact = ({ params }: { params: { id: string } }) => {
     getUserData();
   }, [])
 
-  const handleOnSubmit = async (data: any) => {
-    const response = await axios.put("contact", data)
+  const handleOnSubmit = async (data: any, headers: any) => {
+    const response = await axios.put(`contact/${params.id}`, data, headers)
     if (response) {
       console.log("User updated successfully")
     }
