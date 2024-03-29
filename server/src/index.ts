@@ -92,6 +92,14 @@ const verifyToken = (req: Request, res: Response, next: any) => {
   });
 };
 
+app.get("/me", verifyToken, (req: Request, res: Response) => {
+  const actualUser = users.find(u => u.id === req.currentUser)
+  res.status(200).json({
+    id: actualUser?.id,
+    name: actualUser?.name
+  })
+});
+
 app.post("/login", (req: Request, res: Response) => {
   const { username, password } = req.body;
   const user = users.find(

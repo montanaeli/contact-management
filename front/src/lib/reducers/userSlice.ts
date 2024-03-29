@@ -3,20 +3,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface userState {
-  name: string | null;
+  name: string;
   contacts: string[] | null;
 }
 
 const initialState: userState = {
-  name: null,
+  name: "",
   contacts: null
 };
 
 const userSlice = createSlice({
-  name: 'user',
+  name: 'userInfo',
   initialState,
   reducers: {
-    setUserName(state, action: PayloadAction<string>) {
+    loggedUser(state, action: PayloadAction<string>) {
       state.name = action.payload;
     },
     setUserContacts(state, action: PayloadAction<string[]>) {
@@ -25,5 +25,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUserName, setUserContacts } = userSlice.actions;
+export const { loggedUser, setUserContacts } = userSlice.actions;
 export default userSlice.reducer;

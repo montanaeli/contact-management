@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from 'react-redux';
 import { setToken } from '../../../lib/reducers/authSlice';
 import axios from '@/lib/axiosInstance';
+import { loggedUser } from "@/lib/reducers/userSlice";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,7 +26,6 @@ const Login = () => {
 
       if (response) {
         const data = response.data;
-        // dispatch(setToken(data.token));
         localStorage.setItem('authToken', data.token)
         router.push("/contact");
       } else {
