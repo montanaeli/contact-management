@@ -7,6 +7,7 @@ import { Inter } from "next/font/google";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import axios from "@/lib/axiosInstance";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -87,10 +88,12 @@ const Home = () => {
               >
                 Add contacts to your database
               </label>
-              <Button
-                text="Add new contacts"
-                onClick={handleAddContactButton}
-              />
+              <Link href={`/contact/create`}>
+                <Button
+                  text="Add new contacts"
+                  onClick={handleAddContactButton}
+                />
+              </Link>
             </div>
           </>
         ) : (

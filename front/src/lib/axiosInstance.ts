@@ -17,7 +17,6 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response ? error.response.status : null;
-
     if (status === 401) {
       window.location.href = "/login";
     } else if (status === 404) {

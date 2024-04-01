@@ -4,19 +4,21 @@ import Input from "./Input";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import Link from "next/link";
+import { uuid } from "uuidv4";
 import axios from "@/lib/axiosInstance";
 
 type SubmitData = {
   name?: string;
   title?: string;
   address?: string[];
+  profilePicture?: string;
   phone?: string;
   email?: string;
-}
+};
 
 type Headers = {
   [key: string]: string;
-}
+};
 
 type Props = {
   readOnly: boolean;
@@ -28,7 +30,7 @@ type Props = {
   phone?: string;
   email?: string;
   contactId: string;
-  onSubmit?: (data: SubmitData, headers: Headers) => void
+  onSubmit?: (data: SubmitData, headers: Headers) => void;
 };
 
 const ContactData = ({
@@ -41,7 +43,7 @@ const ContactData = ({
   phone,
   email,
   contactId,
-  onSubmit
+  onSubmit,
 }: Props) => {
   const [userName, setUserName] = useState(name);
   const [userTitle, setUserTitle] = useState(title);
@@ -51,30 +53,32 @@ const ContactData = ({
   const [userEmail, setUserEmail] = useState(email);
 
   useEffect(() => {
-    setUserName(name)
-    setUserTitle(title)
-    setUserProfilePicture(profilePicture)
-    setUserAddress(address)
-    setUserPhone(phone)
-    setUserEmail(email)
-  }, [name, title, profilePicture, address, phone, email])
+    setUserName(name);
+    setUserTitle(title);
+    setUserProfilePicture(profilePicture);
+    setUserAddress(address);
+    setUserPhone(phone);
+    setUserEmail(email);
+  }, [name, title, profilePicture, address, phone, email]);
 
   const handleSaveChanges = () => {
     const token = localStorage.getItem("authToken");
     const headers = {
-        'Authorization' : `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
+    };
+
+    if (onSubmit) {
+      const updateUser = {
+        name: userName,
+        title: userTitle,
+        profilePicture: userProfilePicture,
+        address: userAddress,
+        phone: userPhone,
+        email: userEmail,
+      };
+      onSubmit(updateUser, headers);
     }
-    const updateUser = {
-      name: userName,
-      title: userTitle,
-      address: userAddress,
-      phone: userPhone,
-      email: userEmail
-    }
-    if(onSubmit){
-      onSubmit(updateUser, headers)
-    }
-  }
+  };
 
   return (
     <>
@@ -83,18 +87,18 @@ const ContactData = ({
           <Link href={`/contact/${contactId}/edit`}>
             <Button text="EDIT" />
           </Link>
-          ) : (
+        ) : (
           <></>
         )}
       </div>
       <div className="relative">
-      <Image
-      className="absolute bottom-full left-1/2 -translate-x-[50%]"
-            src="/assets/profile-picture.svg"
-            alt="profile-picture"
-            width={150}
-            height={150}
-          />
+        <Image
+          className="absolute bottom-full left-1/2 -translate-x-[50%]"
+          src="/assets/profile-picture.svg"
+          alt="profile-picture"
+          width={150}
+          height={150}
+        />
         <div className="flex flex-col justify-center items-center gap-2 margin-top: 80px">
           <label className="font-bold text-lg mt-3">{name}</label>
           <label className="font-extralight text-sm">{title}</label>
@@ -142,7 +146,7 @@ const ContactData = ({
               </div>
               <div className="flex flex-col w-1/2 gap-2 md:w-1/2">
                 <label>Addresses</label>
-                <Select options={userAddress || []} />
+                  <Select options={userAddress || []} />
                 <Input
                   title="Phone"
                   placeholder="Phone"
@@ -160,13 +164,20 @@ const ContactData = ({
               </div>
             </div>
           )}
-           {mode === "update" ? (
+          {mode === "update" ? (
             <Link href={`/contact/${contactId}/`}>
               <Button text="Save Changes" onClick={handleSaveChanges} />
-          </Link>
-        ) : (
-          <></>
-        )}
+            </Link>
+          ) : (
+            <></>
+          )}
+          {mode === "create" ? (
+            <Link href={`/contact`}>
+              <Button text="Save Changes" onClick={handleSaveChanges} />
+            </Link>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </>
@@ -174,7 +185,3 @@ const ContactData = ({
 };
 
 export default ContactData;
-function uuidv4() {
-  throw new Error("Function not implemented.");
-}
-

@@ -36,9 +36,7 @@ let contacts = [
     name: "Ted Steward",
     title: "Teacher",
     profilePicture: "",
-    addressList: [
-      { address: "717 S  34th St Mattoon, IL 61938" },
-    ],
+    addressList: [{ address: "717 S  34th St Mattoon, IL 61938" }],
     phone: "(217) 499-0822",
     email: "ted@rowandtable.com",
   },
@@ -77,7 +75,7 @@ let users = [
     id: "2",
     username: "user2",
     password: "password2",
-    contacts: contacts,
+    contacts: [],
     name: "Kyle Lane",
     title: "UX Designer",
     profilePicture: "",
@@ -87,7 +85,7 @@ let users = [
     ],
     phone: "(217) 499-0822",
     email: "ryan@rowandtable.com",
-  }
+  },
 ];
 
 const secretKey = "confidential_key";
@@ -99,7 +97,7 @@ const verifyToken = (req: Request, res: Response, next: any) => {
     return res.status(401).json({ message: "Missing token" });
   }
 
-  const token = authToken.toString().replace('Bearer ','')
+  const token = authToken.toString().replace("Bearer ", "");
 
   jwt.verify(token, secretKey, (err: any, decoded: any) => {
     if (err) {
@@ -111,12 +109,12 @@ const verifyToken = (req: Request, res: Response, next: any) => {
 };
 
 app.get("/me", verifyToken, (req: Request, res: Response) => {
-  const actualUser = users.find(u => u.id === req.currentUser)
+  const actualUser = users.find((u) => u.id === req.currentUser);
   res.status(200).json({
     id: actualUser?.id,
     name: actualUser?.name,
-    contacts: actualUser?.contacts
-  })
+    contacts: actualUser?.contacts,
+  });
 });
 
 app.post("/login", (req: Request, res: Response) => {
@@ -153,12 +151,12 @@ app.get("/contact/:id", verifyToken, (req: Request, res: Response) => {
 });
 
 app.put("/contact/:id", verifyToken, (req: Request, res: Response) => {
-  const {name, title, profilePicture, addressList, phone, email} = req.body;
+  const { name, title, profilePicture, addressList, phone, email } = req.body;
   const id = req.params.id;
 
   const user = users.find((u) => u.id === req.currentUser);
   if (!user) {
-    return res.status(404).json({ message: "User not found"})
+    return res.status(404).json({ message: "User not found" });
   } else {
     const contact = user?.contacts.find((c) => c.id === id);
     if (!contact) {
@@ -170,42 +168,33 @@ app.put("/contact/:id", verifyToken, (req: Request, res: Response) => {
     contact.addressList = addressList;
     contact.phone = phone;
     contact.email = email;
-  
-    return res.status(200).json({ message: 'User updated successfully', contact });
+
+    return res
+      .status(200)
+      .json({ message: "User updated successfully", contact });
   }
 });
 
 app.get("/contacts", verifyToken, (req: Request, res: Response) => {
-  const name = req.query.search?.toString()
-
+  const name = req.query.search?.toString();
   const user = users.find((u) => u.id === req.currentUser);
-
-  if (Object.keys(req.query).length === 0) {
-    const userContacts = user?.contacts;
-    if (userContacts === undefined || !userContacts.length) {
-      return res.status(401).json({ message: "No user contacts" });
-    }
-    return res.status(200).json(userContacts);
-  } else {
-      const userContacts = user?.contacts.filter((contact) => 
-        contact.name.toLowerCase().includes(name!.toLowerCase())
-      );
-      if (!userContacts) {
-        return res.status(404).json({ message: "Contact not found" });
-      }
-    
-      return res.status(200).json(userContacts);
+  // if (Object.keys(req.query).length === 0) {
+  const userContacts = user?.contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(name!.toLowerCase())
+  );
+  if (!userContacts) {
+    return res.status(404).json({ message: "Contact not found" });
   }
+  return res.status(200).json(userContacts);
+  // }
 });
 
 app.post("/contact", verifyToken, (req: Request, res: Response) => {
   const { name, title, profilePicture, addressList, phone, email } = req.body;
   if (!name || !title || !profilePicture || !addressList || !email || !phone) {
-    return res
-      .status(400)
-      .json({
-        message: "Missing required fields: name, address, email and phone",
-      });
+    return res.status(400).json({
+      message: "Missing required fields: name, title, profile picture address, email and phone",
+    });
   }
   const newContact = {
     id: uuidv4(),
