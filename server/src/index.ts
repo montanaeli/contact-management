@@ -17,6 +17,7 @@ app.use(bodyParser.json());
 
 let contacts = [
   {
+    // During development, it is easer to avoid using uuidv4
     // id: uuidv4(),
     id: "c3",
     name: "Norma Wilson",
@@ -176,26 +177,26 @@ app.put("/contact/:id", verifyToken, (req: Request, res: Response) => {
 });
 
 app.get("/contacts", verifyToken, (req: Request, res: Response) => {
-  const name = req.query.search?.toString();
   const user = users.find((u) => u.id === req.currentUser);
-  // if (Object.keys(req.query).length === 0) {
-  const userContacts = user?.contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(name!.toLowerCase())
-  );
+  const userContacts = user?.contacts
   if (!userContacts) {
     return res.status(404).json({ message: "Contact not found" });
   }
   return res.status(200).json(userContacts);
-  // }
 });
 
 app.post("/contact", verifyToken, (req: Request, res: Response) => {
-  const { name, title, profilePicture, addressList, phone, email } = req.body;
-  if (!name || !title || !profilePicture || !addressList || !email || !phone) {
+  const { name, title, profilePicture, phone, email } = req.body;
+  if (!name || !title || !profilePicture || !email || !phone) {
     return res.status(400).json({
       message: "Missing required fields: name, title, profile picture address, email and phone",
     });
   }
+  // TODO: Remove hardcoded data, by fixing input address on create user
+  const addressList: { address: string; }[] = [
+    { address: 'Dirección 1' },
+    { address: 'Dirección 2' },
+  ];
   const newContact = {
     id: uuidv4(),
     name,
