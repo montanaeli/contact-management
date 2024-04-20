@@ -1,6 +1,7 @@
 .DS_Store
 SQLGuide.txt
 node_modules/
+build
 
 
 .env
