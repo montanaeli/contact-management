@@ -1,0 +1,205 @@
+{
+	"info": {
+		"_postman_id": "0bc034be-110a-4cd3-ab7d-6c2bd591a108",
+		"name": "Contact Manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17128057"
+	},
+	"item": [
+		{
+			"name": "Create Contact",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiaWF0IjoxNzEzNzgyMzk2LCJleHAiOjE3MTM3OTMxOTZ9.0SubMK1jkgSlTZJtwV6zEoZMHcYJMrzCBLqCAaPWZHo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Contact 4\",\r\n    \"title\": \"dev\",\r\n    \"profilePicture\": \"profilePicture\",\r\n    \"addressList\": [\"\"],\r\n    \"phone\": \"123456789\",\r\n    \"email\": \"contact4@example.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/contacts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"user1\",\r\n    \"password\": \"password1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Contacts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiaWF0IjoxNzEzNjY4MzIyLCJleHAiOjE3MTM2NzkxMjJ9.8qchiJDf8KHBs1uAPwxqi2qwvWPcQHETxKWZ5m8NTww",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/contacts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Contacts",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiaWF0IjoxNzEzNzgxNTY4LCJleHAiOjE3MTM3OTIzNjh9.NW4wDVn6s13AR1E0jjhU49l7FA4LlWqroXWEZMFPcRA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Elisa Motnana\",\r\n    \"title\": \"Dev Designer\",\r\n    \"profilePicture\": \"\",\r\n    \"addressList\": [\r\n        { \"address\": \"fssd S  34th St Mattoon, IL 61938\" },\r\n        { \"address\": \"718sdsd S  34th St Mattoon, IL 61938\" }\r\n    ],\r\n    \"phone\": \"(217) 49339-0822\",\r\n    \"email\": \"ryan@rowasdadndtable.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/contacts/c4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"contacts",
+						"c4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Contact",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiaWF0IjoxNzEzNzgxNTY4LCJleHAiOjE3MTM3OTIzNjh9.NW4wDVn6s13AR1E0jjhU49l7FA4LlWqroXWEZMFPcRA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/contacts?search=Ted",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"contacts"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "Ted"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Logged",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiaWF0IjoxNzEzNzg0MTA0LCJleHAiOjE3MTM3OTQ5MDR9.c_PMgUMez0UQMEgJTvOi3eEHjPLcHG129CuGroOrvD8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:3001/me",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"me"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
