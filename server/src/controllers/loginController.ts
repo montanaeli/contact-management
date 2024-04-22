@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { authenticateUser } from "../services/authenticationService";
 
-export const loginController = (req: Request, res: Response) => {
+export const login = (req: Request, res: Response) => {
   const { username, password } = req.body;
   const token = authenticateUser(username, password);
   if (token) {
