@@ -29,26 +29,23 @@ export const createContact = (
   profilePicture: string,
   phone: string,
   email: string
-): User | null => {
-  const userIndex = users.findIndex((u) => u.id === userId);
-  if (userIndex === -1) {
+): Contact | null => {
+  const user = users.find((u) => u.id === userId);
+  if (!user) {
     return null;
   }
 
-  const newContact: User = {
+  const newContact: Contact = {
     id: uuidv4(),
     name,
     title,
     profilePicture,
     addressList: [],
     phone,
-    email,
-    username: "",
-    password: "",
-    contacts: [],
+    email
   };
 
-  users[userIndex].contacts.push(newContact);
+  user.contacts.push(newContact);
   return newContact;
 };
 
@@ -77,16 +74,16 @@ type ContactDTO = {
 
 export const updateContact = (
   loggedUser: string,
+  contactId: string,
   contactDTO: ContactDTO
 ) => {
   const user = users.find((u) => u.id === loggedUser);
-  const contact = user?.contacts.find((c) => c.id === contactDTO.id);
+  const contact = user?.contacts.find((c) => c.id === contactId);
   if (contact) {
     const updatedContact = {
       ...contact,
       ...contactDTO
     }
-
     return updatedContact;
   } else {
     return null;

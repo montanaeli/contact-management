@@ -27,6 +27,9 @@ export const getContactsController = (req: Request, res: Response) => {
 export const createContactController = (req: Request, res: Response) => {
   const { name, title, profilePicture, phone, email } = req.body;
   const newContact = createContact(req.currentUser, name, title, profilePicture, phone, email);
+  if (!newContact) {
+    return res.status(401).json({ message: "An error occurred while creating the contact"})
+  }
   res.status(201).json({ message: "Contact created", contact: newContact });
 };
 
@@ -40,10 +43,14 @@ export const getContactByIdController = (req: Request, res: Response) => {
 };
 
 export const updateContactController = (req: Request, res: Response) => {
-  const id = req.params.id;
+  const contactId = req.params.id;
   const { name, title, profilePicture, addressList, phone, email } = req.body;
   const updateData = _.pick(req.body, ["name", "title", "profilePicture", "addressList", "phone", "email"])
-  const updatedContact = updateContact(req.currentUser, updateData);
+  const updateDataWithId = {
+    ...updateData,
+    contactId
+  }
+  const updatedContact = updateContact(req.currentUser, contactId, updateData);
   if (!updatedContact) {
     return res.status(404).json({ message: "Contact not found" });
   }
