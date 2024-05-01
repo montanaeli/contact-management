@@ -44,12 +44,7 @@ export const getContactByIdController = (req: Request, res: Response) => {
 
 export const updateContactController = (req: Request, res: Response) => {
   const contactId = req.params.id;
-  const { name, title, profilePicture, addressList, phone, email } = req.body;
   const updateData = _.pick(req.body, ["name", "title", "profilePicture", "addressList", "phone", "email"])
-  const updateDataWithId = {
-    ...updateData,
-    contactId
-  }
   const updatedContact = updateContact(req.currentUser, contactId, updateData);
   if (!updatedContact) {
     return res.status(404).json({ message: "Contact not found" });

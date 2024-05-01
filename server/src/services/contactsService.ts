@@ -1,8 +1,23 @@
-import { Contact, User, users } from "../data/database";
+import { Contact } from "../data/dataInterfaces";
+import * as fs from 'fs';
+import * as path from 'path';
 import { v4 as uuidv4 } from "uuid";
 
+const dataDirectory = path.join(__dirname, '..', 'data');
+const usersDataPath = path.join(dataDirectory, 'users.json');
+
+function findUser(userId: string) {
+  const usersJson = fs.readFileSync(usersDataPath, 'utf8');
+  let users = JSON.parse(usersJson);
+  const user = users.find((u : any) => u.id === userId);
+  if (!user) {
+    return null;
+  }
+  return user;
+}
+
 export const getContacts = (userId: string): Contact[] => {
-  const user = users.find((u) => u.id === userId);
+  const user = findUser(userId)
   return user?.contacts || [];
 };
 
@@ -10,16 +25,14 @@ export const getContactsByName = (
   id: string,
   name: string
 ): Contact[] | null => {
-  const user = users.find((u) => u.id === id);
-  if (!user) {
-    return null;
-  }
-
-  const filteredContacts = user.contacts.filter((contact) =>
+  const user = findUser(id)
+  const contact = user.contacts.filter((contact: any) =>
     contact.name.toLowerCase().includes(name.toLowerCase())
   );
-
-  return filteredContacts.length > 0 ? filteredContacts : null;
+  if(!contact) {
+    return null
+  }
+  return contact
 };
 
 export const createContact = (
@@ -30,11 +43,6 @@ export const createContact = (
   phone: string,
   email: string
 ): Contact | null => {
-  const user = users.find((u) => u.id === userId);
-  if (!user) {
-    return null;
-  }
-
   const newContact: Contact = {
     id: uuidv4(),
     name,
@@ -44,8 +52,13 @@ export const createContact = (
     phone,
     email
   };
+  const usersJson = fs.readFileSync(usersDataPath, 'utf8');
+  let users = JSON.parse(usersJson);
 
+  const user = findUser(userId)
   user.contacts.push(newContact);
+
+  fs.writeFileSync('users.json', JSON.stringify(users, null, 2));
   return newContact;
 };
 
@@ -53,12 +66,8 @@ export const getContactById = (
   userId: string,
   contactId: string
 ): Contact | null => {
-  const user = users.find((u) => u.id === userId);
-  if (!user) {
-    return null;
-  }
-
-  const contact = user.contacts.find((c) => c.id === contactId);
+  const user = findUser(userId)
+  const contact = user.contacts.find((c : any) => c.id === contactId);
   return contact || null;
 };
 
@@ -77,15 +86,21 @@ export const updateContact = (
   contactId: string,
   contactDTO: ContactDTO
 ) => {
-  const user = users.find((u) => u.id === loggedUser);
-  const contact = user?.contacts.find((c) => c.id === contactId);
-  if (contact) {
-    const updatedContact = {
-      ...contact,
-      ...contactDTO
-    }
-    return updatedContact;
-  } else {
+  const usersJson = fs.readFileSync(usersDataPath, 'utf8');
+  let users = JSON.parse(usersJson);
+
+  const userIndex = users.findIndex((u: any) => u.id === loggedUser);
+  if (userIndex === -1) {
     return null;
   }
+  const contactIndex = users[userIndex].contacts.findIndex((contact: any) => contact.id === contactId);
+  if (contactIndex === -1) {
+    return null;
+  }
+
+  users[userIndex].contacts[contactIndex] = { ...users[userIndex].contacts[contactIndex], ...contactDTO };
+  fs.writeFileSync(usersDataPath, JSON.stringify(users, null, 2));
+
+  return users[userIndex].contacts[contactIndex];
+
 };

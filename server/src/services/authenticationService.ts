@@ -1,4 +1,4 @@
-import { users, User } from "../data/database";
+import { users, User } from "../data/dataInterfaces";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
 
