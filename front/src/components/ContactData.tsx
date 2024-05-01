@@ -4,8 +4,6 @@ import Input from "./Input";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import Link from "next/link";
-import { uuid } from "uuidv4";
-import axios from "@/lib/axiosInstance";
 
 type SubmitData = {
   name?: string;

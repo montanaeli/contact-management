@@ -1,7 +1,7 @@
 import { Contact } from "../data/dataInterfaces";
+import { v4 as uuidv4 } from "uuid";
 import * as fs from 'fs';
 import * as path from 'path';
-import { v4 as uuidv4 } from "uuid";
 
 const dataDirectory = path.join(__dirname, '..', 'data');
 const usersDataPath = path.join(dataDirectory, 'users.json');
@@ -57,8 +57,10 @@ export const createContact = (
 
   const user = findUser(userId)
   user.contacts.push(newContact);
+  console.log("user y sus contactos", user)
+  console.log(user.contacts)
 
-  fs.writeFileSync('users.json', JSON.stringify(users, null, 2));
+  fs.writeFileSync(usersDataPath, JSON.stringify(users, null, 2));
   return newContact;
 };
 

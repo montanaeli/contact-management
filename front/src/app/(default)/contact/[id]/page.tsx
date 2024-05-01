@@ -15,7 +15,7 @@ const Contact = ({ params }: { params: { id: string } }) => {
   const getUserData = useCallback(async () => {
     if (params.id) {
       try {
-        const response = await axios.get(`/contact/${params.id}`);
+        const response = await axios.get(`/contacts/${params.id}`);
         setName(response.data.name);
         setTitle(response.data.title);
         setProfilePicture(response.data.profilePicture);
@@ -32,7 +32,6 @@ const Contact = ({ params }: { params: { id: string } }) => {
     getUserData();
   }, [])
   
-
   return (
     <>
       <ContactData

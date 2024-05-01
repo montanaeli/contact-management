@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import ContactData from '@/components/ContactData'
-import axios from '@/lib/axiosInstance';
-import { useCallback, useEffect, useState } from 'react';
+import ContactData from "@/components/ContactData";
+import { useCallback, useEffect, useState } from "react";
+import { editContactRequest, getContactById } from "@/api-client/contacts";
 
 const Contact = ({ params }: { params: { id: string } }) => {
   const [name, setName] = useState("");
@@ -15,7 +15,7 @@ const Contact = ({ params }: { params: { id: string } }) => {
   const getUserData = useCallback(async () => {
     if (params.id) {
       try {
-        const response = await axios.get(`/contact/${params.id}`);
+        const response = await getContactById(params.id);
         setName(response.data.name);
         setTitle(response.data.title);
         setProfilePicture(response.data.profilePicture);
@@ -30,15 +30,17 @@ const Contact = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     getUserData();
-  }, [])
+  }, []);
 
   const handleOnSubmit = async (data: any, headers: any) => {
-    const response = await axios.put(`contact/${params.id}`, data, headers)
-    if (response) {
-      console.log("User updated successfully")
+    try {
+      await editContactRequest(data, headers, params.id);
+      getUserData()
+    } catch (error) {
+      console.error("Error: ", error);
     }
-  }
-  
+  };
+
   return (
     <>
       <ContactData
@@ -54,7 +56,7 @@ const Contact = ({ params }: { params: { id: string } }) => {
         onSubmit={handleOnSubmit}
       ></ContactData>
     </>
-  )
-}
+  );
+};
 
-export default Contact
+export default Contact;

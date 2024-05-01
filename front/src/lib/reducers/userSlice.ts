@@ -1,6 +1,6 @@
 "use client";
 
-import Contact from '@/app/(default)/contact/[id]/page';
+import Contact from '@/app/(default)/contacts/[id]/page';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Contact {
