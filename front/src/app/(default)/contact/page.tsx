@@ -6,8 +6,8 @@ import ContactPreview from "@/components/ContactPreview";
 import { Inter } from "next/font/google";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import axios from "@/lib/axiosInstance";
 import Link from "next/link";
+import { getContacts, getContactByName } from "@/api-client/contacts"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,28 +26,17 @@ const Home = () => {
 
   const fetchContacts = useCallback(async () => {
     try {
-      const response = await axios.get(`/contacts?search=${searchValue}`);
-
-      if (response) {
-        const data = await response.data;
-        setContacts(data);
-      } else {
-        console.error("Failed to fetch contacts");
-      }
+        const response = await getContactByName(searchValue);
+        setContacts(response);
     } catch (error) {
       console.error("Error:", error);
     }
   }, [searchValue]);
 
-  const getContacts = useCallback(async () => {
+  const getContactList = useCallback(async () => {
     try {
-      const response = await axios.get("/contacts");
-      if (response) {
-        const data = await response.data;
-        setContacts(data);
-      } else {
-        console.error("Failed to get contacts");
-      }
+      const response = await getContacts();
+      setContacts(response);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -62,7 +51,7 @@ const Home = () => {
   }, [searchValue]);
 
   useEffect(() => {
-    getContacts();
+    getContactList();
   }, []);
 
   const handleAddContactButton = async () => {};

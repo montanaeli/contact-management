@@ -1,7 +1,7 @@
 "use client";
 
 import ContactData from "@/components/ContactData";
-import axios from "@/lib/axiosInstance";
+import { getContactById } from "@/api-client/contacts"
 import { useCallback, useEffect, useState } from "react";
 
 const Contact = ({ params }: { params: { id: string } }) => {
@@ -15,7 +15,7 @@ const Contact = ({ params }: { params: { id: string } }) => {
   const getUserData = useCallback(async () => {
     if (params.id) {
       try {
-        const response = await axios.get(`/contacts/${params.id}`);
+        const response = await getContactById(params.id)
         setName(response.data.name);
         setTitle(response.data.title);
         setProfilePicture(response.data.profilePicture);

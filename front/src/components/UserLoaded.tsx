@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Inter } from "next/font/google";
-import axiosInstance from "@/lib/axiosInstance";
 import { loggedUser } from "@/lib/reducers/userSlice";
+import { getUser } from "@/api-client/user"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,12 +19,12 @@ const UserLoaded = () => {
             return;
         }
         const process = async () => {
-            const response = await axiosInstance.get("/me",{
-                headers: {
-                    'Authorization' : `Bearer ${token}`
-                }
-            })
-            dispatch(loggedUser({ name: response.data.name, contacts: response.data.contacts }));
+            try {
+                const response = await getUser(token);
+                dispatch(loggedUser({ name: response.name, contacts: response.contacts }));
+            } catch (error) {
+                console.error("Error: ", error);
+            }
         }
         process()
     }, [])

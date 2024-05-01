@@ -26,3 +26,22 @@ export async function getContactById(id: string) {
     throw new Error("There was an error reading the contact by the id.");
   }
 }
+
+export async function getContacts() {
+  const response = await axios.get("/contacts");
+  if (response) {
+    return response.data
+  } else {
+    throw new Error("There was an error returning contacts")
+  }
+}
+
+export async function getContactByName(name: string) {
+  const response = await axios.get(`/contacts?search=${name}`);
+
+      if (response) {
+        return response.data;
+      } else {
+        console.error("Failed to fetch contacts");
+      }
+}

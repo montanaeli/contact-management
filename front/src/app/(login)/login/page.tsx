@@ -5,7 +5,7 @@ import Button from "@/components/Button";
 import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from '@/lib/axiosInstance';
+import { login } from '@/api-client/login'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,16 +16,9 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-
-      const response = await axios.post("/login", { username: username, password: password})
-
-      if (response) {
-        const data = response.data;
-        localStorage.setItem('authToken', data.token)
-        router.push("/contact");
-      } else {
-        console.error("Login failed");
-      }
+      const response = await login(username, password)
+      localStorage.setItem('authToken', response.token)
+      router.push("/contact");
     } catch (error) {
       console.error("Error:", error);
     }
