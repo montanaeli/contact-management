@@ -4,6 +4,8 @@ import Input from "./Input";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 type SubmitData = {
   name?: string;
@@ -60,7 +62,7 @@ const ContactData = ({
   }, [name, title, profilePicture, address, phone, email]);
 
   const handleSaveChanges = () => {
-    const token = localStorage.getItem("authToken");
+    const token = useSelector((state: RootState) => state.authSlice.authToken);
     const headers = {
       Authorization: `Bearer ${token}`,
     };

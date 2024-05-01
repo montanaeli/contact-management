@@ -12,9 +12,9 @@ const inter = Inter({ subsets: ["latin"] });
 
 const UserLoaded = () => {
     const dispatch = useDispatch();
+    const token = useSelector((state: RootState) => state.authSlice.authToken);
 
     useEffect(() => {
-        const token = localStorage.getItem("authToken");
         if(!token || token === ""){
             return;
         }

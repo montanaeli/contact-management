@@ -6,6 +6,8 @@ import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from '@/api-client/login'
+import { userToken } from "@/lib/reducers/authSlice";
+import { useDispatch } from "react-redux";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,10 +15,13 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
+
 
   const handleLogin = async () => {
     try {
-      const response = await login(username, password)
+      const response = await login(username, password);
+      dispatch(userToken({authToken: response.token}));
       localStorage.setItem('authToken', response.token)
       router.push("/contact");
     } catch (error) {

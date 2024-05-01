@@ -1,6 +1,5 @@
 "use client";
 
-import Contact from '@/app/(default)/contacts/[id]/page';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Contact {
@@ -22,7 +21,7 @@ interface UserState {
 const initialState: UserState = {
   name: "",
   contacts: [],
-  contactById: {id: "", name: "", title: "", profilePicture: "", addressList: [], phone: "", email: ""}
+  contactById: {id: "", name: "", title: "", profilePicture: "", addressList: [], phone: "", email: ""},
 };
 
 const userSlice = createSlice({
