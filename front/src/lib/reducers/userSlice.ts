@@ -28,9 +28,8 @@ const userSlice = createSlice({
   name: 'userInfo',
   initialState,
   reducers: {
-    loggedUser(state, action: PayloadAction<{name: string; contacts: Contact[]}>) {
+    loggedUser(state, action: PayloadAction<{name: string}>) {
       state.name = action.payload.name;
-      state.contacts = action.payload.contacts;
     },
     addContact(state, action: PayloadAction<Contact>) {
       state.contacts.push(action.payload);

@@ -6,7 +6,7 @@
     "contacts": [
       {
         "id": "c3",
-        "name": "Norma Wilson",
+        "name": "Norma",
         "title": "Developer",
         "profilePicture": "",
         "addressList": [
@@ -25,8 +25,8 @@
       },
       {
         "id": "c4",
-        "name": "Elisa Motnana",
-        "title": "Dev Designer",
+        "name": "Elisa Montana",
+        "title": "Developer",
         "profilePicture": "",
         "addressList": [
           {

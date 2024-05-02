@@ -57,8 +57,6 @@ export const createContact = (
 
   const user = findUser(userId)
   user.contacts.push(newContact);
-  console.log("user y sus contactos", user)
-  console.log(user.contacts)
 
   fs.writeFileSync(usersDataPath, JSON.stringify(users, null, 2));
   return newContact;

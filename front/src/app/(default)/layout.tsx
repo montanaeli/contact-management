@@ -1,23 +1,9 @@
-import BackButton from "@/components/SimpleButton";
+import BackButton from "@/components/BackButton";
 import UserLoaded from "@/components/UserLoaded";
 import { Inter } from "next/font/google";
 import { usePathname, useRouter } from 'next/navigation' 
 
 const inter = Inter({ subsets: ["latin"] });
-
-function goBack() {
-  const router = useRouter()
-  const pathname = usePathname();
-
-  switch (pathname) {
-    case '/contact/':
-      router.push('/login');
-      break;
-    default:
-      router.back();
-      break;
-  }
-}
 
 export default function RootLayout({
   children,

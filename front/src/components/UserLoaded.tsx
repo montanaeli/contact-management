@@ -7,12 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Inter } from "next/font/google";
 import { loggedUser } from "@/lib/reducers/userSlice";
 import { getUser } from "@/api-client/user"
+import useAuthToken from "@/hooks/useAuthToken";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const UserLoaded = () => {
     const dispatch = useDispatch();
-    const token = useSelector((state: RootState) => state.authSlice.authToken);
+    const token = useAuthToken();
 
     useEffect(() => {
         if(!token || token === ""){
@@ -21,7 +22,8 @@ const UserLoaded = () => {
         const process = async () => {
             try {
                 const response = await getUser(token);
-                dispatch(loggedUser({ name: response.name, contacts: response.contacts }));
+                console.log("get user ", response.name)
+                dispatch(loggedUser({ name: response.name }));
             } catch (error) {
                 console.error("Error: ", error);
             }
