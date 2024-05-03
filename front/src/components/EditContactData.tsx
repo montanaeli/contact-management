@@ -46,7 +46,6 @@ const EditContactData = ({
   }, [name, title, profilePicture, address, phone, email]);
 
   const handleSaveChanges = () => {
-    // const token = useSelector((state: RootState) => state.authSlice.authToken);
     const headers = {
       Authorization: `Bearer ${token}`,
     };
