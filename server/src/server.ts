@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import { routes } from "./routes";
 import dotenv from "dotenv";
+import db from './models';
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,9 @@ app.use(cors());
 
 app.use(routes);
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+db.sequelize.sync().then(() => {
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+
+})
