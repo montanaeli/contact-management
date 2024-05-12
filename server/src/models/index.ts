@@ -1,13 +1,15 @@
-'use strict';
-
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-// const process = require('process');
+// 'use strict';
 import dotenv from "dotenv";
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.js')[env];
+
+const User = require("./User");
+const Contact = require("./Contact");
+const ContactAdress = require("./ContactAdress");
+const UserAdress = require("./UserAdress");
+const { DataTypes } = require("sequelize");
+const Sequelize = require("sequelize");
+const env = process.env.NODE_ENV || "development";
+const config = require(__dirname + "/../config/config.js")[env];
+
 const db: any = {};
 
 dotenv.config();
@@ -16,31 +18,47 @@ let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    config
+  );
 }
 
-fs
-  .readdirSync(__dirname)
-  .filter((file: string) => {
-    return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.ts' &&
-      file.indexOf('.test.ts') === -1
-    );
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Sequelize Connection has been established successfully.");
   })
-  .forEach((file: string) => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
+  .catch((error: any) => {
+    console.log("Unable to connect to the database: ", error);
   });
 
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
+sequelize.addHook("afterConnect", (connection: any) => {
+  connection.on("error", (error: any) => {
+    console.log("Sequelize connection error:", error);
+  });
+
+  connection.on("end", () => {
+    console.log("Sequelize connection disconnected.");
+  });
 });
 
-db.sequelize = sequelize;
+sequelize.isDatabaseConnected = async () => {
+  try {
+    let result = await sequelize.authenticate();
+    return undefined;
+  } catch (err) {
+    return err;
+  }
+};
+
 db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+db.user = User(sequelize, DataTypes);
+db.contact = Contact(sequelize, DataTypes, db.user);
+db.userAdress = UserAdress(sequelize, DataTypes, db.user);
+db.contactAdress = ContactAdress(sequelize, DataTypes, db.contact);
 
 export default db;

@@ -16,12 +16,12 @@ const Contact = ({ params }: { params: { id: string } }) => {
     if (params.id) {
       try {
         const response = await getContactById(params.id);
-        setName(response.data.name);
-        setTitle(response.data.title);
-        setProfilePicture(response.data.profilePicture);
-        setAddress(response.data.address);
-        setPhone(response.data.phone);
-        setEmail(response.data.email);
+        setName(response.data[0].name);
+        setTitle(response.data[0].title);
+        setProfilePicture(response.data[0].profilePicture);
+        setAddress(response.data[0].address);
+        setPhone(response.data[0].phone);
+        setEmail(response.data[0].email);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -35,7 +35,7 @@ const Contact = ({ params }: { params: { id: string } }) => {
   const handleOnSubmit = async (data: any, headers: any) => {
     try {
       await editContactRequest(data, headers, params.id);
-      getUserData()
+      getUserData();
     } catch (error) {
       console.error("Error: ", error);
     }

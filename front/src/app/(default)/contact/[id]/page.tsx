@@ -1,7 +1,7 @@
 "use client";
 
 import ContactData from "@/components/ContactData";
-import { getContactById } from "@/api-client/contacts"
+import { getContactById } from "@/api-client/contacts";
 import { useCallback, useEffect, useState } from "react";
 
 const Contact = ({ params }: { params: { id: string } }) => {
@@ -15,13 +15,13 @@ const Contact = ({ params }: { params: { id: string } }) => {
   const getUserData = useCallback(async () => {
     if (params.id) {
       try {
-        const response = await getContactById(params.id)
-        setName(response.data.name);
-        setTitle(response.data.title);
-        setProfilePicture(response.data.profilePicture);
-        setAddress(response.data.address);
-        setPhone(response.data.phone);
-        setEmail(response.data.email);
+        const response = await getContactById(params.id);
+        setName(response.data[0].name);
+        setTitle(response.data[0].title);
+        setProfilePicture(response.data[0].profilePicture);
+        setAddress(response.data[0].address);
+        setPhone(response.data[0].phone);
+        setEmail(response.data[0].email);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -30,8 +30,8 @@ const Contact = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     getUserData();
-  }, [])
-  
+  }, []);
+
   return (
     <>
       <ContactData
@@ -44,7 +44,7 @@ const Contact = ({ params }: { params: { id: string } }) => {
         phone={phone}
         email={email}
         contactId={params.id}
-      ></ContactData>
+      />
     </>
   );
 };

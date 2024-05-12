@@ -1,3 +1,5 @@
+import db from '../models';
+const Userdb = db.user
 import { User } from "../data/dataInterfaces";
 import * as fs from 'fs';
 import * as path from 'path';
@@ -5,20 +7,16 @@ import * as path from 'path';
 const dataDirectory = path.join(__dirname, '..', 'data');
 const usersDataPath = path.join(dataDirectory, 'users.json');
 
-function findUser(userId: string) {
-  const usersJson = fs.readFileSync(usersDataPath, 'utf8');
-  let users = JSON.parse(usersJson);
-  const user = users.find((u : any) => u.id === userId);
-  if (!user) {
-    return null;
-  }
-  return user;
+async function findUser(userId: string) {
+  const whereClause = { id: userId }
+  return await Userdb.findOne({ where: whereClause });
 }
 
-export const getUser = (id: string) : User | null => {
-    const actualUser = findUser(id)
+export const getUser = async (id: string) : Promise<User | null> => {
+    const actualUser = await findUser(id)
     if (!actualUser) {
         return null
     }
+
     return actualUser
 }

@@ -1,48 +1,44 @@
+import db from "../models";
+const Contactdb = db.contact;
 import { Contact } from "../data/dataInterfaces";
 import { v4 as uuidv4 } from "uuid";
-import * as fs from 'fs';
-import * as path from 'path';
 
-const dataDirectory = path.join(__dirname, '..', 'data');
-const usersDataPath = path.join(dataDirectory, 'users.json');
-
-function findUser(userId: string) {
-  const usersJson = fs.readFileSync(usersDataPath, 'utf8');
-  let users = JSON.parse(usersJson);
-  const user = users.find((u : any) => u.id === userId);
-  if (!user) {
-    return null;
-  }
-  return user;
-}
-
-export const getContacts = (userId: string): Contact[] => {
-  const user = findUser(userId)
-  return user?.contacts || [];
+export const getContacts = async (userId: string): Promise<Contact[]> => {
+  const whereClause = { userId };
+  return await Contactdb.findAll({ where: whereClause });
 };
 
-export const getContactsByName = (
+export const getContactsByName = async (
   id: string,
   name: string
-): Contact[] | null => {
-  const user = findUser(id)
-  const contact = user.contacts.filter((contact: any) =>
+): Promise<Contact[] | null> => {
+  const userContacts = await getContacts(id);
+  const contact = userContacts.filter((contact: any) =>
     contact.name.toLowerCase().includes(name.toLowerCase())
   );
-  if(!contact) {
-    return null
+  if (!contact) {
+    return null;
   }
-  return contact
+  return contact;
 };
 
-export const createContact = (
+export const createContact = async (
   userId: string,
   name: string,
   title: string,
   profilePicture: string,
   phone: string,
   email: string
-): Contact | null => {
+): Promise<Contact | null> => {
+  if (!name || !phone || !email) {
+    throw new Error("name, phone, and email are required");
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    throw new Error("Invalid email format");
+  }
+
   const newContact: Contact = {
     id: uuidv4(),
     name,
@@ -50,57 +46,88 @@ export const createContact = (
     profilePicture,
     addressList: [],
     phone,
-    email
+    email,
   };
-  const usersJson = fs.readFileSync(usersDataPath, 'utf8');
-  let users = JSON.parse(usersJson);
 
-  const user = findUser(userId)
-  user.contacts.push(newContact);
+  try {
+    // Crear el contacto en la base de datos
+    await Contactdb.create({
+      id: newContact.id,
+      name: newContact.name,
+      title: newContact.title,
+      profilePicture: newContact.profilePicture,
+      phone: newContact.phone,
+      email: newContact.email,
+      userId,
+    });
 
-  fs.writeFileSync(usersDataPath, JSON.stringify(users, null, 2));
-  return newContact;
+    return newContact;
+  } catch (error) {
+    console.error("Error creating contact:", error);
+    throw new Error("Error creating contact");
+  }
 };
 
-export const getContactById = (
+export const getContactById = async (
   userId: string,
   contactId: string
-): Contact | null => {
-  const user = findUser(userId)
-  const contact = user.contacts.find((c : any) => c.id === contactId);
-  return contact || null;
+): Promise<Contact | null> => {
+  const whereClause = { userId, id: contactId };
+  return await Contactdb.findAll({ where: whereClause });
 };
 
 type ContactDTO = {
-  id?: string
-  name?: string
-  title?: string
-  profilePicture?: { address: string }[]
-  addressList?: string
-  phone?: string
-  email?: string
-}
+  id?: string;
+  name?: string;
+  title?: string;
+  profilePicture?: { address: string }[];
+  addressList?: string;
+  phone?: string;
+  email?: string;
+};
 
-export const updateContact = (
+export const updateContact = async (
   loggedUser: string,
   contactId: string,
   contactDTO: ContactDTO
 ) => {
-  const usersJson = fs.readFileSync(usersDataPath, 'utf8');
-  let users = JSON.parse(usersJson);
-
-  const userIndex = users.findIndex((u: any) => u.id === loggedUser);
-  if (userIndex === -1) {
-    return null;
-  }
-  const contactIndex = users[userIndex].contacts.findIndex((contact: any) => contact.id === contactId);
-  if (contactIndex === -1) {
-    return null;
+  if (!loggedUser) {
+    throw new Error("User must be logged in to update contact");
   }
 
-  users[userIndex].contacts[contactIndex] = { ...users[userIndex].contacts[contactIndex], ...contactDTO };
-  fs.writeFileSync(usersDataPath, JSON.stringify(users, null, 2));
+  if (
+    !contactDTO.name &&
+    !contactDTO.title &&
+    !contactDTO.profilePicture &&
+    !contactDTO.phone &&
+    !contactDTO.email
+  ) {
+    throw new Error("At least one field to update must be provided");
+  }
 
-  return users[userIndex].contacts[contactIndex];
+  const contactData = {
+    id: contactDTO.id,
+    name: contactDTO.name,
+    title: contactDTO.title,
+    profilePicture: contactDTO.profilePicture,
+    phone: contactDTO.phone,
+    email: contactDTO.email,
+    userId: loggedUser,
+  };
+  const whereClause = { id: contactId };
+  let contactUpdated = await Contactdb.sequelize.transaction(async (t: any) => {
+    const contactUpdateResult = await Contactdb.update(contactData, {
+      where: whereClause,
+      transaction: t,
+    });
+    if (contactUpdateResult == 0) {
+      throw Error(`Could not update contact with id: ${contactId}`);
+    }
 
+    const updatedContact = await Contactdb.findByPk(contactId, {
+      transaction: t,
+    });
+    return updatedContact;
+  });
+  return contactUpdated;
 };

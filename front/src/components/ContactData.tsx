@@ -17,7 +17,6 @@ const ContactData = ({
   contactId,
   onSubmit,
 }: Props) => {
-
   return (
     <>
       <EditButtonContactData userContactId={contactId} mode={mode} />
