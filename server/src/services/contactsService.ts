@@ -1,7 +1,8 @@
 import db from "../models";
-const Contactdb = db.contact;
 import { Contact } from "../data/dataInterfaces";
 import { v4 as uuidv4 } from "uuid";
+import { Request, Response, NextFunction } from "express";
+const Contactdb = db.contact;
 
 export const getContacts = async (userId: string): Promise<Contact[]> => {
   const whereClause = { userId };
@@ -30,15 +31,6 @@ export const createContact = async (
   phone: string,
   email: string
 ): Promise<Contact | null> => {
-  if (!name || !phone || !email) {
-    throw new Error("name, phone, and email are required");
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    throw new Error("Invalid email format");
-  }
-
   const newContact: Contact = {
     id: uuidv4(),
     name,
@@ -50,6 +42,14 @@ export const createContact = async (
   };
 
   try {
+    // if (!newContact.name || !newContact.phone || !newContact.email) {
+    //   throw new Error("name, phone, and email are required");
+    // }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newContact.email)) {
+      throw new Error("Invalid email format");
+    }
     // Crear el contacto en la base de datos
     await Contactdb.create({
       id: newContact.id,
@@ -60,12 +60,10 @@ export const createContact = async (
       email: newContact.email,
       userId,
     });
-
-    return newContact;
   } catch (error) {
     console.error("Error creating contact:", error);
-    throw new Error("Error creating contact");
   }
+  return newContact;
 };
 
 export const getContactById = async (

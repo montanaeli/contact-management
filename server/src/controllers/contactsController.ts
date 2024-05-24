@@ -31,21 +31,25 @@ export const getContactsController = async (req: Request, res: Response) => {
 };
 
 export const createContactController = async (req: Request, res: Response) => {
-  const { name, title, profilePicture, phone, email } = req.body;
-  const newContact = await createContact(
-    req.currentUser,
-    name,
-    title,
-    profilePicture,
-    phone,
-    email
-  );
-  if (!newContact) {
-    return res
-      .status(401)
-      .json({ message: "An error occurred while creating the contact" });
+  try {
+    const { name, title, profilePicture, phone, email } = req.body;
+    const newContact = await createContact(
+      req.currentUser,
+      name,
+      title,
+      profilePicture,
+      phone,
+      email
+    );
+    if (!newContact) {
+      return res
+        .status(401)
+        .json({ message: "An error occurred while creating the contact" });
+    }
+    res.status(201).json({ message: "Contact created", contact: newContact });
+  } catch (e) {
+    console.log("server error", e);
   }
-  res.status(201).json({ message: "Contact created", contact: newContact });
 };
 
 export const getContactByIdController = async (req: Request, res: Response) => {

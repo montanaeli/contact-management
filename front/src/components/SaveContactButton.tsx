@@ -10,20 +10,21 @@ type Props = {
 const SaveContactButton = ({ mode, id, onChange }: Props) => {
   return (
     <>
-      {mode === "update" ? (
+      <Button text="Save Changes" onClick={onChange} />
+      {/* {mode === "update" ? (
         <Link href={`/contact/${id}/`}>
           <Button text="Save Changes" onClick={onChange} />
         </Link>
       ) : (
         <></>
-      )}
-      {mode === "create" ? (
+      )} */}
+      {/* {mode === "create" ? (
         <Link href={`/contact`}>
           <Button text="Save Changes" onClick={onChange} />
         </Link>
       ) : (
         <></>
-      )}
+      )} */}
     </>
   );
 };
