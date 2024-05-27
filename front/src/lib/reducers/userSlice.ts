@@ -1,15 +1,15 @@
 "use client";
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface Contact {
-  id: string,
-  name: string,
-  title: string,
-  profilePicture: string,
-  addressList: string[],
-  phone: string,
-  email: string
+  id: string;
+  name: string;
+  title: string;
+  profilePicture: string;
+  address: string[];
+  phone: string;
+  email: string;
 }
 
 interface UserState {
@@ -21,14 +21,22 @@ interface UserState {
 const initialState: UserState = {
   name: "",
   contacts: [],
-  contactById: {id: "", name: "", title: "", profilePicture: "", addressList: [], phone: "", email: ""},
+  contactById: {
+    id: "",
+    name: "",
+    title: "",
+    profilePicture: "",
+    address: [],
+    phone: "",
+    email: "",
+  },
 };
 
 const userSlice = createSlice({
-  name: 'userInfo',
+  name: "userInfo",
   initialState,
   reducers: {
-    loggedUser(state, action: PayloadAction<{name: string}>) {
+    loggedUser(state, action: PayloadAction<{ name: string }>) {
       state.name = action.payload.name;
     },
     addContact(state, action: PayloadAction<Contact>) {
@@ -36,9 +44,11 @@ const userSlice = createSlice({
     },
     getContactById(state, action: PayloadAction<string>) {
       const contactId = action.payload;
-      console.log("user slice id", contactId)
-      const contact = state.contacts.find(contact => contact.id === contactId);
-      console.log("user slice", contact)
+      console.log("user slice id", contactId);
+      const contact = state.contacts.find(
+        (contact) => contact.id === contactId
+      );
+      console.log("user slice", contact);
 
       if (contact) {
         state.contactById = contact;

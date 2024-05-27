@@ -1,14 +1,11 @@
 import axios from "@/lib/axiosInstance";
-import { toast } from "react-toastify";
 
 export async function createContactRequest(data: any, headers: any) {
   const response = await axios.post(`contacts/`, data, headers);
   if (response) {
-    // console.log("User created successfully");
-    toast.success("User created successfully");
+    return response;
   } else {
-    toast.error("There was an error creating the contact.");
-    throw new Error("There was an error creating the contact.");
+    throw new Error("There was an error creating the contact");
   }
 }
 

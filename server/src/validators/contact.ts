@@ -5,12 +5,12 @@ export const create = z.object({
   title: z.string(),
   phone: z.string(),
   email: z.string().email(),
-  addressList: z.string(),
+  address: z.string().array(),
 });
 
 export const update = z.object({
-  name: z.string(),
-  title: z.string(),
-  phone: z.string(),
-  email: z.string().email(),
+  name: z.string().optional(),
+  title: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().email().optional(),
 });

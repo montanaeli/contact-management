@@ -39,14 +39,20 @@ export const createContactController = async (req: Request, res: Response) => {
       title,
       profilePicture,
       phone,
-      email
+      email,
+      req.currentUser
     );
     if (!newContact) {
       return res
         .status(401)
         .json({ message: "An error occurred while creating the contact" });
     }
-    res.status(201).json({ message: "Contact created", contact: newContact });
+    res
+      .status(201)
+      .json({
+        message: "Contact added to your contacts list",
+        contact: newContact,
+      });
   } catch (e) {
     console.log("server error", e);
   }
@@ -67,7 +73,7 @@ export const updateContactController = async (req: Request, res: Response) => {
     "name",
     "title",
     "profilePicture",
-    "addressList",
+    "address",
     "phone",
     "email",
   ]);

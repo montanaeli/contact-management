@@ -1,20 +1,20 @@
 import Input from "./Input";
 import Select from "react-select";
 import { useEffect, useState } from "react";
-
 import SaveContactButton from "./SaveContactButton";
 import useAuthToken from "@/hooks/useAuthToken";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 type Props = {
   contactId: string;
   mode: string;
-  name: string;
+  name?: string;
   title?: string;
   profilePicture?: string;
   address?: string[];
   phone?: string;
-  email: string;
+  email?: string;
   onSubmit?: (data: any, headers: any) => void;
 };
 
@@ -37,6 +37,8 @@ const EditContactData = ({
   const [userEmail, setUserEmail] = useState(email);
   const token = useAuthToken();
 
+  const router = useRouter();
+
   useEffect(() => {
     setUserName(name);
     setUserTitle(title);
@@ -48,7 +50,7 @@ const EditContactData = ({
 
   const validate = (updateUser: any): boolean => {
     let isValid = true;
-    if (!updateUser.userName || !updateUser.email) {
+    if (!updateUser.name || !updateUser.email) {
       isValid = false;
       Swal.fire({
         title: "Error!",
@@ -70,14 +72,15 @@ const EditContactData = ({
         name: userName,
         title: userTitle,
         profilePicture: userProfilePicture,
-        address: userAddress,
+        address: [""],
         phone: userPhone,
         email: userEmail,
       };
       if (validate(updateUser)) {
+        console.log("update user ", updateUser);
         onSubmit(updateUser, headers);
       }
-      // si todo sale bien hacer router.push
+      router.push("/contact");
     }
   };
 
