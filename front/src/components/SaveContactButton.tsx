@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Button from "@/components/Button";
 
 type Props = {
@@ -8,25 +7,7 @@ type Props = {
 };
 
 const SaveContactButton = ({ mode, id, onChange }: Props) => {
-  return (
-    <>
-      <Button text="Save Changes" onClick={onChange} />
-      {/* {mode === "update" ? (
-        <Link href={`/contact/${id}/`}>
-          <Button text="Save Changes" onClick={onChange} />
-        </Link>
-      ) : (
-        <></>
-      )} */}
-      {/* {mode === "create" ? (
-        <Link href={`/contact`}>
-          <Button text="Save Changes" onClick={onChange} />
-        </Link>
-      ) : (
-        <></>
-      )} */}
-    </>
-  );
+  return <Button text="Save Changes" onClick={onChange} />;
 };
 
 export default SaveContactButton;

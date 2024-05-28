@@ -12,7 +12,7 @@ export async function createContactRequest(data: any, headers: any) {
 export async function editContactRequest(data: any, headers: any, id: string) {
   const response = await axios.put(`contacts/${id}`, data, headers);
   if (response) {
-    console.log("User updated successfully", response);
+    return response;
   } else {
     throw new Error("There was an error updating the contact.");
   }

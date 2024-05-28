@@ -48,20 +48,6 @@ const EditContactData = ({
     setUserEmail(email);
   }, [name, title, profilePicture, address, phone, email]);
 
-  const validate = (updateUser: any): boolean => {
-    let isValid = true;
-    if (!updateUser.name || !updateUser.email) {
-      isValid = false;
-      Swal.fire({
-        title: "Error!",
-        text: `Don't leave empty fields`,
-        icon: "error",
-        confirmButtonText: "Ok",
-      });
-    }
-    return isValid;
-  };
-
   const handleSaveChanges = () => {
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -76,11 +62,8 @@ const EditContactData = ({
         phone: userPhone,
         email: userEmail,
       };
-      if (validate(updateUser)) {
-        console.log("update user ", updateUser);
-        onSubmit(updateUser, headers);
-      }
-      router.push("/contact");
+      onSubmit(updateUser, headers);
+      // router.push("/contact");
     }
   };
 
